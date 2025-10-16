@@ -10,13 +10,13 @@ if (-not (Test-Path "$env:VCPKG_ROOT\vcpkg.exe")) {
 }
 
 if (-not (Test-Path '.\libs\mpv\lib\mpv.lib')) {
-    $mpvUrl = 'https://github.com/ikas-mc/wiliwili-uwp-poc/releases/download/0.4/x64-uwp-mpv.zip'
-    & curl.exe -L -o '.\x64-uwp-mpv.zip' $mpvUrl
-    Expand-Archive '.\x64-uwp-mpv.zip' -DestinationPath '.\libs\mpv\' -Force
+    $mpvUrl = 'https://github.com/ikas-mc/wiliwili-uwp-poc/releases/download/0.4/mpv-uwp-x64-luajit.zip'
+    & curl.exe -L -o '.\mpv.zip' $mpvUrl
+    Expand-Archive '.\mpv.zip' -DestinationPath '.\libs\mpv\' -Force
 }
 
 if (-not (Test-Path '.\libs\mpv\lib\mpv.lib')) {
-    Write-Error "Failed to install x64-uwp-mpv.zip"
+    Write-Error "Failed to install mpv.zip"
     exit 1
 }
 
