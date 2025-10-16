@@ -25,7 +25,7 @@ if (-not (Test-Path "./borealis")) {
 }
 
 if (-not (Test-Path "./switchfin")) {
-    & git clone --depth 1 -b uwp-dev https://github.com/ikas-mc/switchfin-uwp
+    & git clone --depth 1 -b uwp-dev https://github.com/ikas-mc/switchfin-uwp switchfin
 }
 
 Set-Location $workDir
