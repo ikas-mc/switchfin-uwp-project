@@ -61,5 +61,6 @@
 		<uap:Capability Name="musicLibrary"/>
 		<uap:Capability Name="videosLibrary"/>
 		<uap:Capability Name="removableStorage"/>
+		<Capability Name="codeGeneration"/>
 	</Capabilities>
 </Package>
