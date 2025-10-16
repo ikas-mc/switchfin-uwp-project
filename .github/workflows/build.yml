@@ -1,0 +1,46 @@
+name: build
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env: 
+      USERNAME: ikas-mc
+      FEED_URL: https://nuget.pkg.github.com/ikas-mc/index.json
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/ikas-mc/index.json,readwrite"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: msvc
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Add NuGet sources
+      shell: pwsh
+      run: |
+        .$(vcpkg.exe fetch nuget) `
+          sources add `
+          -Source "${{ env.FEED_URL }}" `
+          -StorePasswordInClearText `
+          -Name GitHubPackages `
+          -UserName "${{ env.USERNAME }}" `
+          -Password "${{ secrets.GH_PACKAGES_TOKEN }}"
+        .$(vcpkg.exe fetch nuget) `
+          setapikey "${{ secrets.GH_PACKAGES_TOKEN }}" `
+          -Source "${{ env.FEED_URL }}"
+
+    - name: build
+      run: .\build-ci.ps1
+
+    - name: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: switchfin-uwp-x64
+        path: |
+          build\AppPackages\switchfin-uwp\*\*.msixbundle
+          build\AppPackages\switchfin-uwp\*\*.msix
+          build\AppPackages\switchfin-uwp\*\*.appx
+          build\AppPackages\switchfin-uwp\*\*.cer
+          build\AppPackages\switchfin-uwp\*\Dependencies\x64\*

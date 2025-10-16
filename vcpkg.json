@@ -1,0 +1,23 @@
+{
+  "dependencies": [
+    "zlib",
+    {
+      "name": "curl",
+      "features": [
+        "ssl",
+        "websockets"
+      ]
+    },
+    "fmt",
+    "lunasvg",
+    "tinyxml2",
+    "tweeny",
+    "cppwinrt",
+    {
+      "name": "directxtk",
+      "features": [
+        "xaudio2-9"
+      ]
+    }
+  ]
+}

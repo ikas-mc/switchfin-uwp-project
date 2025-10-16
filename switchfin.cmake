@@ -1,0 +1,110 @@
+cmake_minimum_required(VERSION 3.20)
+
+# Project Info
+project(switchfin-uwp)
+
+set(VERSION_MAJOR "0")
+set(VERSION_MINOR "7")
+set(VERSION_ALTER "4")
+set(PROJECT_TITLEID "010ff000ffff0003")
+set(PROJECT_AUTHOR "dragonflylee")
+set(PACKAGE_NAME "org.player.switchfin")
+set(VITA_TITLEID "SWITCHFIN")
+set(PSN_TITLE_ID "SFIN00000")
+set(VITA_VERSION "00.74")
+set(GIT_TAG_SHORT "uwp-unofficial")
+
+set(DISABLE_OPENCC ON)
+set(VERIFY_SSL OFF)
+
+# version
+list(APPEND APP_PLATFORM_OPTION
+   -DBUILD_PACKAGE_NAME=${PACKAGE_NAME}
+   -DBUILD_VERSION_MAJOR=${VERSION_MAJOR}
+   -DBUILD_VERSION_MINOR=${VERSION_MINOR}
+   -DBUILD_VERSION_REVISION=${VERSION_REVISION}
+)
+
+#git_info(GIT_TAG_VERSION GIT_TAG_SHORT)
+list(APPEND APP_PLATFORM_OPTION -DBUILD_TAG_VERSION=${GIT_TAG_VERSION} -DBUILD_TAG_SHORT=${GIT_TAG_SHORT})
+
+# uwp res
+set(TEMPLATE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/switchfin-uwp/Package.appxmanifest
+    ${CMAKE_CURRENT_SOURCE_DIR}/switchfin-uwp/Windows_TemporaryKey.pfx
+)
+
+file(GLOB_RECURSE PACKAGE_ASSETS_FILES "${CMAKE_CURRENT_SOURCE_DIR}/switchfin-uwp/Assets/*")
+set_property(SOURCE ${PACKAGE_ASSETS_FILES} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+set_property(SOURCE ${PACKAGE_ASSETS_FILES} PROPERTY VS_DEPLOYMENT_LOCATION "Assets")
+
+# resource
+set(PROJECT_RESOURCES "${CMAKE_CURRENT_SOURCE_DIR}/switchfin/resources")
+
+function(add_deployment_content BASE_PATH FILE)
+    set_property(SOURCE ${FILE} PROPERTY VS_TOOL_OVERRIDE None)
+    set_property(SOURCE ${FILE} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+    get_filename_component(FILE_DIR ${FILE} DIRECTORY ABSOLUTE)
+    file(RELATIVE_PATH TARGET_PATH ${BASE_PATH} ${FILE_DIR})
+    set_property(SOURCE ${FILE} PROPERTY VS_DEPLOYMENT_LOCATION ${TARGET_PATH})
+endfunction(add_deployment_content)
+
+file(GLOB_RECURSE PROJECT_RESOURCES_FILES "${PROJECT_RESOURCES}/*")
+
+foreach(FILE IN LISTS PROJECT_RESOURCES_FILES)
+    add_deployment_content("${PROJECT_RESOURCES}/.." "${FILE}")
+endforeach()
+source_group(TREE "${PROJECT_RESOURCES}" PREFIX "resource" FILES ${PROJECT_RESOURCES_FILES})
+
+# source 
+set(HEADER_INCLUDES)
+
+file(GLOB_RECURSE MAIN_SRC "${CMAKE_CURRENT_SOURCE_DIR}/switchfin/app/src/*.cpp")
+file(GLOB_RECURSE HEADER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/switchfin/app/include/*.hpp")
+list(APPEND HEADER_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/switchfin/app/include)
+
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/switchfin/app/src" PREFIX "src" FILES ${MAIN_SRC} )
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/switchfin/app/include" PREFIX "include" FILES ${HEADER_SRC} )
+
+
+file(GLOB_RECURSE PROJECT_RESOURCES2 "${CMAKE_CURRENT_SOURCE_DIR}/libs/libmpv/bin/*.dll")
+set_property(SOURCE ${PROJECT_RESOURCES2} PROPERTY VS_DEPLOYMENT_CONTENT 1)
+set_property(SOURCE ${PROJECT_RESOURCES2} PROPERTY VS_DEPLOYMENT_LOCATION ".")
+
+# Target
+add_executable(${PROJECT_NAME} WIN32 ${MAIN_SRC} ${HEADER_SRC} ${PROJECT_RESOURCES2} ${TEMPLATE_FILES} ${PROJECT_RESOURCES_FILES} ${PACKAGE_ASSETS_FILES})
+
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+    RUNTIME_OUTPUT_NAME switchfin-uwp
+)
+
+list(APPEND HEADER_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/libs/libmpv/include)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/libs/libmpv/lib/mpv.lib)
+
+#find_package(cppwinrt CONFIG REQUIRED)
+#target_link_libraries(${PROJECT_NAME} Microsoft::CppWinRT)
+
+find_package(lunasvg CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} lunasvg::lunasvg)
+
+find_package(OpenSSL REQUIRED)
+target_link_libraries(${PROJECT_NAME} OpenSSL::SSL OpenSSL::Crypto)
+
+find_package(CURL REQUIRED)
+target_link_libraries(${PROJECT_NAME} CURL::libcurl)
+
+find_package(ZLIB REQUIRED)
+target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
+
+target_link_libraries(${PROJECT_NAME} borealis)
+
+target_include_directories(${PROJECT_NAME} PUBLIC  ${HEADER_INCLUDES} )
+target_compile_options(${PROJECT_NAME} PRIVATE -DBRLS_RESOURCES_DIR="." ${APP_PLATFORM_OPTION})
+target_compile_definitions(${PROJECT_NAME} PRIVATE  BOREALIS_USE_STD_THREAD _WINRT_ __WINRT__ __WINRT_NEW__ BOREALIS_USE_D3D11 NOMINMAX _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS _WINSOCK_DEPRECATED_NO_WARNINGS _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_WARNINGS)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    APP_VERSION=${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_ALTER}
+    APP_BUILD=${VERSION_BUILD}
+    BUILD_TAG_SHORT=${GIT_TAG_SHORT}
+    BUILD_PACKAGE_NAME=${PROJECT_NAME}
+)
