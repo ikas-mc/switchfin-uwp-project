@@ -9,7 +9,7 @@
 	IgnorableNamespaces="uap mp uap3 desktop rescap">
 
 	<Identity Name="switchfin-uwp-release" Publisher="CN=CMake Test Cert"
-		Version="0.7.4.0" />
+		Version="0.7.5.0" />
 	<mp:PhoneIdentity PhoneProductId="059171e0-a203-4953-a6a6-8d04515414d5"
 		PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 	<Properties>
