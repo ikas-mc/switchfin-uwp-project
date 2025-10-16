@@ -67,7 +67,7 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/switchfin/app/src" PREFIX "src" F
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/switchfin/app/include" PREFIX "include" FILES ${HEADER_SRC} )
 
 
-file(GLOB_RECURSE PROJECT_RESOURCES2 "${CMAKE_CURRENT_SOURCE_DIR}/libs/libmpv/bin/*.dll")
+file(GLOB_RECURSE PROJECT_RESOURCES2 "${CMAKE_CURRENT_SOURCE_DIR}/libs/mpv/bin/*.dll")
 set_property(SOURCE ${PROJECT_RESOURCES2} PROPERTY VS_DEPLOYMENT_CONTENT 1)
 set_property(SOURCE ${PROJECT_RESOURCES2} PROPERTY VS_DEPLOYMENT_LOCATION ".")
 
@@ -79,8 +79,8 @@ set_target_properties(${PROJECT_NAME}
     RUNTIME_OUTPUT_NAME switchfin-uwp
 )
 
-list(APPEND HEADER_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/libs/libmpv/include)
-target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/libs/libmpv/lib/mpv.lib)
+list(APPEND HEADER_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/libs/mpv/include)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/libs/mpv/lib/mpv.lib)
 
 #find_package(cppwinrt CONFIG REQUIRED)
 #target_link_libraries(${PROJECT_NAME} Microsoft::CppWinRT)
