@@ -13,7 +13,7 @@
 	<mp:PhoneIdentity PhoneProductId="059171e0-a203-4953-a6a6-8d04515414d5"
 		PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 	<Properties>
-		<DisplayName>switchfin-uwp</DisplayName>
+		<DisplayName>switchfin uwp-unofficial</DisplayName>
 		<PublisherDisplayName>ikas-mc</PublisherDisplayName>
 		<Logo>Assets\StoreLogo.png</Logo>
 	</Properties>
