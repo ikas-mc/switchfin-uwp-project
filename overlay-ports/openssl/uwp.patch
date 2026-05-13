@@ -1,0 +1,28 @@
+diff --git a/Configurations/50-win-onecore.conf b/Configurations/50-win-onecore.conf
+index 91e77b6..13aea0a 100644
+--- a/Configurations/50-win-onecore.conf
++++ b/Configurations/50-win-onecore.conf
+@@ -108,9 +108,10 @@ my %targets = (
+         inherit_from    => [ "VC-WIN64A-ONECORE" ],
+         lflags          => add("/APPCONTAINER"),
+         defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
++                               "OPENSSL_NO_CAPIENG=1",
+                                "_WIN32_WINNT=0x0A00"),
+         dso_scheme      => "",
+-        disable         => sub { [ 'ui-console', 'stdio', 'async', 'uplink',
++        disable         => sub { [ 'ui-console', 'async', 'uplink',
+                                    @{ UWP_info()->{disable} } ] },
+         ex_libs         => "WindowsApp.lib",
+     },
+@@ -128,9 +129,10 @@ my %targets = (
+         inherit_from    => [ "VC-WIN64-ARM" ],
+         lflags          => add("/APPCONTAINER"),
+         defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
++                               "OPENSSL_NO_CAPIENG=1",
+                                "_WIN32_WINNT=0x0A00"),
+         dso_scheme      => "",
+-        disable         => sub { [ 'ui-console', 'stdio', 'async', 'uplink',
++        disable         => sub { [ 'ui-console', 'async', 'uplink',
+                                    @{ UWP_info()->{disable} } ] },
+         ex_libs         => "WindowsApp.lib",
+     },
