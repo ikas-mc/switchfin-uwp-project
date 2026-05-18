@@ -1,0 +1,58 @@
+ lib/vtls/openssl.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/lib/vtls/openssl.c b/lib/vtls/openssl.c
+index 4629ca4..e7f409e 100644
+--- a/lib/vtls/openssl.c
++++ b/lib/vtls/openssl.c
+@@ -172,6 +172,8 @@ typedef unsigned long sslerr_t;
+ #endif
+ #define ossl_valsize_t numcert_t
+ 
++#include <wincrypt.h>
++
+ static CURLcode push_certinfo(struct Curl_easy *data,
+                               BIO *mem, const char *label, int num)
+   WARN_UNUSED_RESULT;
+@@ -2785,7 +2787,7 @@ static CURLcode load_cacert_from_memory(X509_STORE *store,
+   return (count > 0) ? CURLE_OK : CURLE_SSL_CACERT_BADFILE;
+ }
+ 
+-#ifdef USE_WIN32_CRYPTO
++//#ifdef USE_WIN32_CRYPTO
+ static CURLcode ossl_win_load_store(struct Curl_easy *data,
+                                     struct Curl_cfilter *cf,
+                                     const char *win_store,
+@@ -2973,7 +2975,7 @@ static CURLcode ossl_windows_load_anchors(struct Curl_cfilter *cf,
+   return result;
+ }
+ 
+-#endif /* USE_WIN32_CRYPTO */
++//#endif /* USE_WIN32_CRYPTO */
+ 
+ static CURLcode ossl_load_trust_anchors(struct Curl_cfilter *cf,
+                                         struct Curl_easy *data,
+@@ -2991,7 +2993,7 @@ static CURLcode ossl_load_trust_anchors(struct Curl_cfilter *cf,
+ 
+   octx->store_is_empty = TRUE;
+   if(ssl_config->native_ca_store) {
+-#ifdef USE_WIN32_CRYPTO
++//#ifdef USE_WIN32_CRYPTO
+     bool added = FALSE;
+     result = ossl_windows_load_anchors(cf, data, store, &added);
+     if(result)
+@@ -3000,10 +3002,10 @@ static CURLcode ossl_load_trust_anchors(struct Curl_cfilter *cf,
+       infof(data, "  Native: Windows System Stores ROOT+CA");
+       octx->store_is_empty = FALSE;
+     }
+-#elif defined(USE_APPLE_SECTRUST)
+-    infof(data, "  Native: Apple SecTrust");
+-    have_native_check = TRUE;
+-#endif
++//#if defined(USE_APPLE_SECTRUST)
++//    infof(data, "  Native: Apple SecTrust");
++//    have_native_check = TRUE;
++//#endif
+   }
+ 
+   if(conn_config->ca_info_blob) {
